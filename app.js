@@ -1,22 +1,25 @@
 import { Hono } from "https://deno.land/x/hono@v3.12.11/mod.ts";
-import { getFeedback, incrementFeedback } from "./feedbacks.js";
+import { Eta } from "https://deno.land/x/eta@v3.4.0/src/index.ts";
+import { incrementFeedback, getFeedbackCount } from "./feedbackService.js";
 
+const eta = new Eta({ views: `${Deno.cwd()}/templates/` });
 const app = new Hono();
 
-const feedbackRoutes = [1, 2, 3];
+app.get("/", async (c) => {
+  const html = await eta.render("index.eta");
+  return c.html(html);
+});
 
-feedbackRoutes.forEach((value) => {
-  app.get(`/feedbacks/${value}`, async (c) => {
-    const count = await getFeedback(value);
-    return c.text(`Feedback ${value}: ${count}`);
-  });
+app.post("/feedbacks/:value", async (c) => {
+  const value = c.req.param("value");
+  await incrementFeedback(value);
+  return c.redirect("/");
+});
 
-  app.post(`/feedbacks/${value}`, async (c) => {
-    await incrementFeedback(value);
-    const count = await getFeedback(value);
-    return c.text(`Feedback ${value}: ${count}`);
-  });
+app.get("/feedbacks/:value", async (c) => {
+  const value = c.req.param("value");
+  const count = await getFeedbackCount(value);
+  return c.text(`Feedback ${value}: ${count}`);
 });
 
 export default app;
-

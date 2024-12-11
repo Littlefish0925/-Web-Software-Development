@@ -1,21 +1,14 @@
-let kv;
+const kv = await Deno.openKv();
 
-const initKV = async () => {
-  if (!kv) {
-    kv = await Deno.openKv();
-  }
+export const incrementFeedback = async (value) => {
+  const key = ["feedback", value.toString()];
+  const res = await kv.get(key);
+  const count = res.value ? res.value + 1 : 1;
+  await kv.set(key, count);
 };
 
-const getFeedback = async (value) => {
-  await initKV();
-  const result = await kv.get(["feedback", `${value}`]);
-  return result.value || 0;
+export const getFeedbackCount = async (value) => {
+  const key = ["feedback", value.toString()];
+  const res = await kv.get(key);
+  return res.value || 0;
 };
-
-const incrementFeedback = async (value) => {
-  await initKV();
-  const currentCount = await getFeedback(value);
-  await kv.set(["feedback", `${value}`], currentCount + 1);
-};
-
-export { getFeedback, incrementFeedback };
