@@ -1,8 +1,9 @@
 import { addSong, getSongs } from './songService.js';
 
-export const showFormAndSongs = (c) => {
-  const songs = getSongs();
-  return c.html(c.render('index.eta', { songs }));
+export const showFormAndSongs = async (c) => {
+    const songs = getSongs();
+    const html = await eta.renderFile('index.eta', { songs });
+    return c.html(html);
 };
 
 export const addNewSong = async (c) => {
