@@ -3,7 +3,7 @@ import { addSong, getSongs } from "./songService.js";
 export function setupSongs(app, eta) {
   app.get("/", async (c) => {
     const songs = getSongs();
-    const html = await eta.render("index.eta", { songs });
+    const html = await eta.render("./templates/index.eta", { songs });
     return c.html(html);
   });
 
