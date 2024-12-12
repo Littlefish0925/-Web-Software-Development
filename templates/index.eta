@@ -23,7 +23,7 @@
         <th>Duration (seconds)</th>
       </tr>
       <% if (songs && songs.length > 0) { %>
-        <% songs.forEach(song => { %>
+        <% songs.forEach((song) => { %>
           <tr>
             <td><%= song.name %></td>
             <td><%= song.duration %></td>
